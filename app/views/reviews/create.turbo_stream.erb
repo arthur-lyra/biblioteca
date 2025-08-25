@@ -1,0 +1,5 @@
+<%= turbo_stream.replace "average_rating" do %>
+  <div id="average_rating">
+    Média: <span><%= @book.reload.average_rating || "-" %></span>
+  </div>
+<% end %>

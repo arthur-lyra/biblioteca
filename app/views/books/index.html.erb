@@ -1,0 +1,26 @@
+<!-- app/views/books/index.html.erb -->
+<h1 class="text-center mb-4">Livros</h1>
+
+<%= render "filters" %>
+
+<div data-controller="search" class="mb-4">
+  <input data-search-target="input"
+         data-action="input->search#autocomplete"
+         type="text"
+         placeholder="Buscar por título..."
+         class="form-control mb-2" />
+  <ul data-search-target="results" class="list-group"></ul>
+</div>
+
+<ul class="list-group">
+  <% @books.each do |book| %>
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <%= link_to book.title, book, class: "fw-bold" %>
+      <span class="text-muted"><%= book.author %></span>
+    </li>
+  <% end %>
+</ul>
+
+<div class="mt-4">
+  <%= pagy_nav(@pagy) if @pagy %>
+</div>

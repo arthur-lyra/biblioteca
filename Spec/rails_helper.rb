@@ -1,0 +1,4 @@
+# spec/rails_helper.rb
+RSpec.configure do |config|
+  config.include Devise::Test::IntegrationHelpers, type: :request
+end

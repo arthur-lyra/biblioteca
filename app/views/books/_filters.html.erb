@@ -1,0 +1,5 @@
+<!-- app/views/books/_filters.html.erb -->
+<%= form_with url: books_path, method: :get, data: { turbo_frame: "_top" } do |f| %>
+  <%= text_field_tag :q, params[:q], placeholder: "Título ou autor" %>
+  <%= submit_tag "Filtrar" %>
+<% end %>

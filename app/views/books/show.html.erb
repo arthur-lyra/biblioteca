@@ -1,0 +1,17 @@
+<!-- app/views/books/show.html.erb -->
+<h1><%= @book.title %></h1>
+<p>Autor: <%= @book.author %></p>
+
+<div id="average_rating">
+  Média: <span><%= @book.average_rating || "-" %></span>
+</div>
+
+<% if user_signed_in? %>
+  <div data-controller="review">
+    <%= form_with model: [@book, @review], data: { review_target: "form", action: "submit->review#submitReview" } do |f| %>
+      <%= f.number_field :rating, in: 1..5, step: 1, data: { review_target: "ratingInput" } %>
+      <%= f.text_area :comment %>
+      <%= f.submit "Salvar avaliação" %>
+    <% end %>
+  </div>
+<% end %>
