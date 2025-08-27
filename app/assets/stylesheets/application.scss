@@ -9,3 +9,25 @@
  * Consider organizing styles into separate files for maintainability.
  */
 @import "bootstrap";
+
+#autocomplete-dropdown {
+  max-height: 300px;
+  overflow-y: auto;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  border-radius: 0.5rem;
+  border: 1px solid #0d6efd;
+}
+
+#autocomplete-dropdown .list-group-item {
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 1.05rem;
+  padding: 0.75rem 1rem;
+}
+
+#autocomplete-dropdown .list-group-item:hover,
+#autocomplete-dropdown .list-group-item:focus {
+  background: #e7f1ff;
+  color: #0d6efd;
+}

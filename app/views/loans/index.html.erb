@@ -1,0 +1,28 @@
+<h1 class="mb-4">Meus Empréstimos</h1>
+
+<% if @loans.any? %>
+  <ul class="list-group">
+    <% @loans.each do |loan| %>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <strong><%= loan.book.title %></strong>
+          <span class="text-muted ms-2">Autor: <%= loan.book.author %></span>
+          <span class="badge bg-secondary ms-2"><%= loan.status %></span>
+        </div>
+
+        <div class="d-flex align-items-center">
+          <span class="text-muted me-3">
+            Alugado em: <%= loan.borrowed_at.strftime("%d/%m/%Y %H:%M") if loan.borrowed_at %>
+          </span>
+          <% if loan.returned_at.present? %>
+            <span class="text-muted me-3">Devolvido em: <%= loan.returned_at.strftime("%d/%m/%Y %H:%M") %></span>
+          <% elsif loan.status == "active" %>
+            <%= button_to "Devolver Livro", give_back_book_path(loan.book), method: :post, class: "btn btn-warning btn-sm" %>
+          <% end %>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <div class="alert alert-info">Você ainda não possui empréstimos.</div>
+<% end %>

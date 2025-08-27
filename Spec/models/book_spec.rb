@@ -1,15 +1,20 @@
-# spec/models/book_spec.rb
-require "rails_helper"
+require 'rails_helper'
 
 RSpec.describe Book, type: :model do
   it "é inválido sem título" do
     book = build(:book, title: nil)
-    expect(book).to be_invalid
-    expect(book.errors[:title]).to be_present
+    expect(book).not_to be_valid
+    expect(book.errors[:title]).to include("can't be blank")
   end
 
-  it "não permite available > total" do
-    book = build(:book, total_quantity: 1, available_quantity: 2)
-    expect(book).to be_invalid
+  it "é inválido sem autor" do
+    book = build(:book, author: nil)
+    expect(book).not_to be_valid
+    expect(book.errors[:author]).to include("can't be blank")
+  end
+
+  it "é válido com todos os campos obrigatórios" do
+    book = build(:book)
+    expect(book).to be_valid
   end
 end

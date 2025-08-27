@@ -24,15 +24,14 @@ end
 
 # Cria usuários comuns de exemplo
 5.times do
-  User.find_or_create_by!(email: Faker::Internet.unique.email) do |u|
+  User.find_or_create_by!(email: Faker::Internet.unique.email(domain: 'exemplo.com')) do |u|
     u.name = Faker::Name.name
     u.password = "password123"
     u.role = :user
   end
 end
-
 # Cria livros de exemplo
-10.times do
+100.times do
   Book.find_or_create_by!(title: Faker::Book.unique.title) do |b|
     b.author = Faker::Book.author
     b.category = %w[Computação Matemática História Literatura].sample

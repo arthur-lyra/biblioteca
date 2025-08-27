@@ -1,5 +1,8 @@
-<%= turbo_stream.replace "average_rating" do %>
-  <div id="average_rating">
-    Média: <span><%= @book.reload.average_rating || "-" %></span>
-  </div>
-<% end %>
+<turbo-stream action="replace" target="reviews">
+  <template>
+    <%= render partial: "books/reviews", formats: [:html], locals: { reviews: @reviews, book: @book } %>
+    <div class="d-flex justify-content-center">
+      <%= paginate @reviews %>
+    </div>
+  </template>
+</turbo-stream>

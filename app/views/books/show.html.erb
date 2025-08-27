@@ -1,17 +1,59 @@
-<!-- app/views/books/show.html.erb -->
-<h1><%= @book.title %></h1>
-<p>Autor: <%= @book.author %></p>
+<!-- filepath: c:\Users\User\Desktop\Edembergue\biblioteca\app\views\books\show.html.erb -->
+<h1 class="text-center mb-4"><%= @book.title %></h1>
 
-<div id="average_rating">
-  Média: <span><%= @book.average_rating || "-" %></span>
+<p><strong>Autor:</strong> <%= @book.author %></p>
+<p><strong>Categoria:</strong> <%= @book.category %></p>
+<p><strong>Quantidade em estoque:</strong> <%= @book.available_quantity %></p>
+<p><strong>Sinopse:</strong> <%= @book.synopsis %></p>
+
+<!-- Botão para alugar o livro -->
+<div class="mt-3">
+  <% if user_signed_in? && @book.available_quantity > 0 %>
+    <% unless current_user.loans.where(returned_at: nil).exists? %>
+      <%= button_to "Alugar livro", borrow_book_path(@book), method: :post, class: "btn btn-primary" %>
+    <% else %>
+      <span class="text-warning ms-2">Você já está com um livro alugado</span>
+    <% end %>
+  <% elsif @book.available_quantity == 0 %>
+    <p class="text-danger">Este livro não está disponível para empréstimo.</p>
+  <% end %>
 </div>
 
-<% if user_signed_in? %>
-  <div data-controller="review">
-    <%= form_with model: [@book, @review], data: { review_target: "form", action: "submit->review#submitReview" } do |f| %>
-      <%= f.number_field :rating, in: 1..5, step: 1, data: { review_target: "ratingInput" } %>
-      <%= f.text_area :comment %>
-      <%= f.submit "Salvar avaliação" %>
-    <% end %>
-  </div>
-<% end %>
+<!-- Avaliação -->
+<h3 class="mt-4">Avaliação</h3>
+<turbo-frame id="review_form">
+  <%= form_with model: @review, url: book_reviews_path(@book) do |f| %>
+    <div>
+      <%= f.label :rating, "Nota" %>
+      <%= f.number_field :rating, min: 1, max: 5, class: "form-control" %>
+    </div>
+    <div class="mt-2">
+      <%= f.label :comment, "Comentário" %>
+      <%= f.text_area :comment, class: "form-control" %>
+    </div>
+    <div class="mt-3">
+      <%= f.submit "Salvar avaliação", class: "btn btn-success" %>
+    </div>
+  <% end %>
+</turbo-frame>
+
+<div id="reviews">
+  <h2 class="mt-4">Avaliações</h2>
+  <% if @reviews.any? %>
+    <ul class="list-group mb-3">
+      <% @reviews.each do |review| %>
+        <li class="list-group-item">
+          <strong><%= review.user.name %></strong>
+          <span class="badge bg-primary ms-2"><%= review.rating %>/5</span>
+          <p class="mb-1"><%= review.comment %></p>
+          <small class="text-muted"><%= review.created_at.strftime("%d/%m/%Y %H:%M") %></small>
+        </li>
+      <% end %>
+    </ul>
+    <div class="d-flex justify-content-center">
+      <%= paginate @reviews %>
+    </div>
+  <% else %>
+    <div class="alert alert-info">Ainda não há avaliações para este livro.</div>
+  <% end %>
+</div>

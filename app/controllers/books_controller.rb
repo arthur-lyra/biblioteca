@@ -4,15 +4,22 @@ class BooksController < ApplicationController
 
   def index
     @q = params[:q].to_s.strip
+    @category = params[:category]
+    @author = params[:author]
+
     scope = policy_scope(Book)
     scope = scope.where("title ILIKE ? OR author ILIKE ?", "%#{@q}%", "%#{@q}%") if @q.present?
-    @pagy, @books = pagy(scope.order(:title))
+    scope = scope.where(category: @category) if @category.present?
+    scope = scope.where(author: @author) if @author.present?
+
+    @books = scope.order(:title).page(params[:page]).per(10)
   end
 
   def show
     @book = Book.find(params[:id])
     authorize @book
     @review = current_user ? @book.reviews.find_or_initialize_by(user: current_user) : Review.new
+    @reviews = @book.reviews.order(created_at: :desc).page(params[:page]).per(5)
   end
 
   def new
@@ -23,6 +30,7 @@ class BooksController < ApplicationController
   def create
     @book = Book.new(book_params)
     authorize @book
+    @book.available_quantity = @book.total_quantity
     if @book.save
       redirect_to @book, notice: "Livro criado."
     else
@@ -53,11 +61,18 @@ class BooksController < ApplicationController
   end
 
   # Autocomplete JSON
-  def search
+def search
+  query = params[:q].to_s.strip
+  if query.present?
     scope = policy_scope(Book)
-    results = scope.where("title ILIKE ?", "%#{params[:q]}%").limit(10).pluck(:id, :title)
-    render json: results.map { |id, title| { id:, title: } }
+    results = scope.where("title ILIKE ? OR author ILIKE ?", "%#{query}%", "%#{query}%")
+                   .limit(10)
+                   .pluck(:id, :title, :author, :available_quantity)
+    render json: results.map { |id, title, author, available_quantity| { id: id, title: title, author: author, available_quantity: available_quantity } }
+  else
+    render json: [], status: :bad_request
   end
+end
 
   def borrow
     @book = Book.find(params[:id])

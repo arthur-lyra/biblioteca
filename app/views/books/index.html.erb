@@ -1,26 +1,69 @@
-<!-- app/views/books/index.html.erb -->
-<h1 class="text-center mb-4">Livros</h1>
-
-<%= render "filters" %>
-
-<div data-controller="search" class="mb-4">
-  <input data-search-target="input"
-         data-action="input->search#autocomplete"
-         type="text"
-         placeholder="Buscar por título..."
-         class="form-control mb-2" />
-  <ul data-search-target="results" class="list-group"></ul>
-</div>
-
-<ul class="list-group">
-  <% @books.each do |book| %>
-    <li class="list-group-item d-flex justify-content-between align-items-center">
-      <%= link_to book.title, book, class: "fw-bold" %>
-      <span class="text-muted"><%= book.author %></span>
-    </li>
+<!-- filepath: c:\Users\User\Desktop\Edembergue\biblioteca\app\views\books\index.html.erb -->
+<div class="container py-4">
+  <% if user_signed_in? && current_user.admin? %>
+    <div class="mb-3 text-end">
+      <%= link_to "Cadastrar Livro", new_book_path, class: "btn btn-primary" %>
+    </div>
   <% end %>
-</ul>
 
-<div class="mt-4">
-  <%= pagy_nav(@pagy) if @pagy %>
+  <h1 class="text-center mb-4 display-5">📚 Livros</h1>
+
+  <!-- Filtros -->
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <%= form_with url: books_path, method: :get, local: true do |f| %>
+        <div class="input-group">
+          <%= f.label :category, "Categoria", class: "input-group-text" %>
+          <%= f.select :category, Book.distinct.pluck(:category), { include_blank: "Todas" }, class: "form-select" %>
+        </div>
+        <div class="input-group mt-2">
+          <%= f.label :author, "Autor", class: "input-group-text" %>
+          <%= f.select :author, Book.distinct.pluck(:author), { include_blank: "Todos" }, class: "form-select" %>
+        </div>
+        <div class="mt-2">
+          <%= f.submit "Filtrar", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+    <div class="col-md-8">
+      <!-- Campo de busca dinâmica -->
+      <div data-controller="search" class="mb-4 position-relative">
+        <input 
+          data-search-target="input" 
+          data-action="input->search#autocomplete" 
+          type="text" 
+          placeholder="Buscar por título ou autor..." 
+          class="form-control form-control-lg mb-2 shadow-sm">
+        <ul data-search-target="results" class="list-group position-absolute w-100 shadow rounded border border-primary" id="autocomplete-dropdown" style="z-index: 1050; display: block; top: 100%; left: 0;""></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Listagem de todos os livros -->
+  <ul class="list-group shadow-sm">
+    <% @books.each do |book| %>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <%= link_to book.title, book, class: "fw-bold text-primary" %>
+          <span class="text-muted ms-2">Autor: <%= book.author %></span>
+        </div>
+        <div class="d-flex align-items-center">
+          <span class="badge bg-info text-dark me-3">Disponível: <%= book.available_quantity %></span>
+          <% if user_signed_in? && book.available_quantity > 0 %>
+            <% unless current_user.loans.where(returned_at: nil).exists? %>
+              <%= button_to "Alugar", borrow_book_path(book), method: :post, class: "btn btn-success btn-sm" %>
+            <% else %>
+              <span class="text-warning ms-2">Você já está com um livro alugado</span>
+            <% end %>
+          <% elsif book.available_quantity == 0 %>
+            <span class="text-danger ms-2">Indisponível</span>
+          <% end %>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+
+  <!-- Paginação -->
+  <%= paginate @books%>
+
 </div>

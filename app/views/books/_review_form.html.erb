@@ -1,0 +1,14 @@
+<!-- filepath: c:\Users\User\Desktop\Edembergue\biblioteca\app\views\books\_review_form.html.erb -->
+<%= form_with model: review, url: book_reviews_path(book) do |f| %>
+  <div class="mb-2">
+    <%= f.label :rating, "Nota" %>
+    <%= f.number_field :rating, min: 1, max: 5, class: "form-control" %>
+  </div>
+  <div class="mb-2">
+    <%= f.label :comment, "Comentário" %>
+    <%= f.text_area :comment, class: "form-control" %>
+  </div>
+  <div class="mt-2">
+    <%= f.submit "Salvar avaliação", class: "btn btn-success" %>
+  </div>
+<% end %>

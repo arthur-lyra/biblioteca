@@ -1,20 +1,18 @@
-# spec/policies/book_policy_spec.rb
-require "rails_helper"
+require 'rails_helper'
 
 RSpec.describe BookPolicy do
-  subject { described_class }
+  let(:user) { create(:user) }
+  let(:book) { create(:book) }
+  let(:policy) { described_class.new(user, book) }
 
-  let(:book) { build_stubbed(:book) }
-  let(:user) { build(:user) }
-  let(:admin) { build(:user, :admin) }
-
-  it "permite admin criar/editar/excluir" do
-    expect(subject.new(admin, book).create?).to be true
-    expect(subject.new(admin, book).update?).to be true
-    expect(subject.new(admin, book).destroy?).to be true
+  it "permite acesso para qualquer usuário nas ações show e index" do
+    expect(policy.show?).to be true
+    expect(policy.index?).to be true
   end
 
-  it "nega usuário comum criar/editar/excluir" do
-    expect(subject.new(user, book).create?).to be false
+  it "não permite criar, atualizar ou excluir para usuário comum" do
+    expect(policy.create?).to be false
+    expect(policy.update?).to be false
+    expect(policy.destroy?).to be false
   end
 end

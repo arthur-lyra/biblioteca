@@ -1,0 +1,10 @@
+<ul class="list-group mb-3">
+  <% reviews.each do |review| %>
+    <li class="list-group-item">
+      <strong><%= review.user.name %></strong>
+      <span class="badge bg-primary ms-2"><%= review.rating %>/5</span>
+      <p class="mb-1"><%= review.comment %></p>
+      <small class="text-muted"><%= review.created_at.strftime("%d/%m/%Y %H:%M") %></small>
+    </li>
+  <% end %>
+</ul>

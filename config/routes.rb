@@ -21,6 +21,11 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
-  resources :loans, only: [:index, :show]
+  resources :loans, only: [:index, :show]do
+    member do
+      patch :return
+    end
+  end
+  
   root "books#index"
 end

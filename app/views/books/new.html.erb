@@ -1,0 +1,65 @@
+<!-- filepath: c:\Users\User\Desktop\Edembergue\biblioteca\app\views\books\new.html.erb -->
+<h1 class="mb-4 text-center">Cadastrar Livro</h1>
+
+<!-- Toasts para erros de validação -->
+<div aria-live="polite" aria-atomic="true" class="position-relative">
+  <div class="toast-container position-fixed top-0 end-0 p-3" id="toast-container">
+    <% if @book.errors.any? %>
+      <% @book.errors.full_messages.each do |msg| %>
+        <div class="toast align-items-center text-bg-danger border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+          <div class="d-flex">
+            <div class="toast-body">
+              <%= msg %>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card shadow-sm border-primary">
+      <div class="card-body">
+        <%= form_with model: @book, local: true do |f| %>
+          <div class="mb-3">
+            <%= f.label :title, "Título", class: "form-label fw-bold" %>
+            <%= f.text_field :title, class: "form-control", placeholder: "Digite o título do livro" %>
+          </div>
+          <div class="mb-3">
+            <%= f.label :author, "Autor", class: "form-label fw-bold" %>
+            <%= f.text_field :author, class: "form-control", placeholder: "Nome do autor" %>
+          </div>
+          <div class="mb-3">
+            <%= f.label :category, "Categoria", class: "form-label fw-bold" %>
+            <%= f.text_field :category, class: "form-control", placeholder: "Categoria do livro" %>
+          </div>
+          <div class="mb-3">
+            <%= f.label :total_quantity, "Quantidade total", class: "form-label fw-bold" %>
+            <%= f.number_field :total_quantity, class: "form-control", min: 1, placeholder: "Ex: 5" %>
+          </div>
+          <div class="mb-3">
+            <%= f.label :synopsis, "Sinopse", class: "form-label fw-bold" %>
+            <%= f.text_area :synopsis, class: "form-control", rows: 4, placeholder: "Breve resumo do livro" %>
+          </div>
+          <div class="d-grid gap-2">
+            <%= f.submit "Salvar", class: "btn btn-primary btn-lg" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ativação dos toasts -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const toastEls = document.querySelectorAll('.toast');
+  toastEls.forEach(function(toastEl) {
+    const toast = new bootstrap.Toast(toastEl);
+    toast.show();
+  });
+});
+</script>

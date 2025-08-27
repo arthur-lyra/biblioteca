@@ -21,7 +21,9 @@ gem 'devise'
 
 gem "pundit"
 
-gem 'pagy'
+#gem 'pagy'
+
+gem 'kaminari'
 
 gem 'bootstrap', '~> 5.3.0'
 
@@ -71,8 +73,12 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+  gem 'pundit-matchers'
 end
 
 group :development, :test do
   gem 'faker'
+  gem 'factory_bot_rails'
 end
+
+gem "rspec-rails", "~> 8.0", :groups => [:development, :test]
